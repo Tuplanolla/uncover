@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="application/xhtml+xml; charset=UTF-8" http-equiv="Content-Type" />
+		<title>Example</title>
+		<script src="uncover.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<h1 id="uncover">Uncover</h1>
+
+<p>Uncover (or UncoverJS, if need be) is a tiny JavaScript framework for
+turning any website into slides that can be uncovered interactively.
+It can be used as is or put into a bookmarklet.</p>
+
+<hr />
+
+<h1 id="draft">Draft!</h1>
+
+<hr />
+
+<h2 id="basic-usage">Basic Usage</h2>
+
+<p>Uncover is turned on and off with <a href="javascript:uncover.toggle();"><code>uncover.toggle()</code></a>.
+When turned on, it adds an overlay to the current page and
+binds some keys to move the overlay.</p>
+
+<hr />
+
+<p>By default the overlay moves between</p>
+
+<ul>
+  <li>the top edges of</li>
+  <li><code>hr</code> tags</li>
+</ul>
+
+<p>and the default keys are</p>
+
+<ul>
+  <li><em>Down</em> to move to the next tag or the end of the page,</li>
+  <li><em>Up</em> to move to the previous tag or the beginning of the page,</li>
+  <li><em>Ctrl</em> <em>Down</em> to move to the end of the page and</li>
+  <li><em>Ctrl</em> <em>Up</em> to move to the beginning of the page.</li>
+</ul>
+
+<hr />
+
+<h2 id="overview">Overview</h2>
+
+<p>Uncover is free software and
+as such licensed under the GNU GPL.
+The full license can be found in the <code>LICENSE</code> file that
+resides in the same directory as this file.
+In short, copies and derivative works are permitted as long as
+they use the same license.</p>
+
+<p>The project was started on 2015-(urgh) and first released on 2015-(slurp).
+It was written by Sampsa “Tuplanolla” Kiiskinen for
+presenting web things during lecture things.</p>
+
+<hr />
+
+<h2 id="advanced-usage">Advanced Usage</h2>
+
+<p>The movement of the overlay is determined by</p>
+
+<ul>
+  <li>a target string,</li>
+  <li>an anchor string and</li>
+  <li>a collector procedure.</li>
+</ul>
+
+<hr />
+
+<p>The target is simply a string that tells the collector what to look for.
+The default behavior is
+to collect every tag with the name specified by the target string.
+The target string can be obtained with <a href="javascript:window.alert(uncover.getTarget());"><code>uncover.getTarget()</code></a> and
+modified with <a href="javascript:uncover.setTarget((function(x) {return x || uncover.getTarget()})(window.prompt()));"><code>uncover.setTarget(x)</code></a>,
+where <code>x</code> must be a <code>String</code> or the behavior is undefined.</p>
+
+<hr />
+
+<p>The anchor is also a string, but
+its values are restricted to <code>"top"</code> and <code>"bottom"</code>.
+It determines which part of the target element is
+the exact position to place the overlay.
+It can be obtained with <a href="javascript:window.alert(uncover.getAnchor());"><code>uncover.getAnchor()</code></a> and
+changed with <a href="javascript:uncover.anchorTop();"><code>uncover.anchorTop()</code></a> and <a href="javascript:uncover.anchorBottom();"><code>uncover.anchorBottom()</code></a>.</p>
+
+<hr />
+
+<p>The collector is a unary <code>function</code> that takes the target string and
+returns a list of elements.
+As before, there are <a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getCollector()</code></a> and
+<a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));"><code>uncover.setCollector()</code></a>.</p>
+
+<p>This will be changed to something more convenient soon.</p>
+
+<hr />
+
+<p>The keys are customizable through
+<a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getBindings()</code></a> and
+<a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));"><code>uncover.setBindings(a)</code></a>,
+where <code>a</code> must be an <code>Array</code> of object literals with</p>
+
+<ul>
+  <li>an integral <code>Number</code> property <code>key</code>,</li>
+  <li>a nullary <code>function</code> property <code>action</code></li>
+</ul>
+
+<p>and optionally some <code>Bool</code> properties</p>
+
+<ul>
+  <li><code>alt</code>,</li>
+  <li><code>ctrl</code>,</li>
+  <li><code>meta</code>,</li>
+  <li><code>shift</code> and</li>
+  <li><code>absorb</code></li>
+</ul>
+
+<p>or the behavior is undefined.
+Optional properties that are <code>undefined</code> are assumed not to matter.</p>
+
+<hr />
+
+<p>It is straightforward to implement such things as
+advancing with the <em>Space</em> key in addition to the defaults.</p>
+
+<pre><code>uncover.setBindings(uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}]));
+</code></pre>
+
+<hr />
+
+<p>The current target element is accessible through the convenient
+<a href="javascript:window.alert(JSON.stringify(uncover.getBindings(), null, 2));"><code>uncover.first()</code></a>,
+<a href="javascript:uncover.setBindings((function(x) {return x ? eval(x) : uncover.getBindings()})(window.prompt()));"><code>uncover.previous()</code></a>,
+<a href="javascript:uncover.first();"><code>uncover.current()</code></a>,
+<a href="javascript:uncover.previous();"><code>uncover.next()</code></a> and
+<a href="javascript:uncover.current();"><code>uncover.last()</code></a>,
+in addition to the more precise
+<a href="javascript:window.alert(uncover.getPosition());"><code>uncover.getPosition()</code></a> and
+<a href="javascript:uncover.setPosition((function(x) {return x ? parseInt(x) : uncover.getPosition()})(window.prompt()));"><code>uncover.setPosition(n)</code></a>,
+where <code>n</code> must be an integral <code>Number</code> or the behavior is undefined.</p>
+
+<hr />
+
+<h2 id="technical-details">Technical Details</h2>
+
+<p>The overlay is a <code>div</code> with an <code>id</code> of <code>uncover</code> and a <code>z-index</code> of <code>65535</code>.
+It has a centered child element that is also a <code>div</code>.</p>
+
+
+	</body>
+</html>
