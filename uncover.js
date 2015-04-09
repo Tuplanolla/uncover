@@ -1,221 +1,261 @@
 var uncover = (function() {
-	// These are general-purpose constants.
-
-	var VK_LEFT = 37;
-	var VK_UP = 38;
-	var VK_RIGHT = 39;
-	var VK_DOWN = 40;
-
-	// These are general-purpose procedures.
-
 	var getTopOffset = function(element) {
 		var offset = 0;
 
-		do {
+		while (element) {
 			offset += element.offsetTop || 0;
+
 			element = element.offsetParent;
-		} while (element);
+		}
 
 		return offset;
+	};
+
+	var getBottomOffset = function(element) {
+		return getTopOffset(element)
+			+ (element.offsetHeight || 0);
 	};
 
 	var getDocumentHeight = function() {
 		var body = document.body;
 		var html = document.documentElement;
 
-		return Math.max(body.scrollHeight,
-				body.offsetHeight,
-				html.clientHeight,
-				html.scrollHeight,
-				html.offsetHeight);
+		return Math.max(body.scrollHeight || 0,
+				body.offsetHeight || 0,
+				html.clientHeight || 0,
+				html.scrollHeight || 0,
+				html.offsetHeight || 0);
 	};
 
 	var getViewportHeight = function() {
-		return Math.max(document.documentElement.clientHeight,
-				window.innerHeight);
+		return Math.max(document.documentElement.clientHeight || 0,
+				window.innerHeight || 0);
 	};
 
 	var getViewportWidth = function() {
-		return Math.max(document.documentElement.clientWidth,
-				window.innerWidth);
+		return Math.max(document.documentElement.clientWidth || 0,
+				window.innerWidth || 0);
 	};
 
-	// These form the mutable state.
-
-	var currentlyOn = false;
-
-	var currentAnchor = "hr";
-
-	var currentPosition = -1;
-
-	var usage = (function () {
-		var element = document.createElement("div");
-		element.style.display = "block";
-		element.style.position = "absolute";
-		element.style.textAlign = "center";
-		element.innerHTML = "Use the arrow keys &larr; and &rarr; to navigate.";
-		return element;
-	})();
-
-	var overlay = (function() {
-		var element = document.createElement("div");
-		element.id = "cover";
-		element.style.display = "block";
-		element.style.position = "absolute";
-		element.style.textAlign = "center";
-		element.style.zIndex = "65535";
-		element.style.width = "100%";
-		element.style.height = "100%";
-		element.style.left = "0px";
-		element.style.top = "0px";
-		element.appendChild(usage);
-		return element;
-	})();
-
-	// These are domain-specific procedures.
-
-	var delimiters = function() {
-		return document.getElementsByTagName(currentAnchor);
+	var keyCode = {
+		enter: 13,
+		escape: 27,
+		space: 32,
+		pageUp: 33,
+		pageDown: 34,
+		end: 35,
+		home: 36,
+		left: 37,
+		up: 38,
+		right: 39,
+		down: 40
 	};
 
-	var update = function(position) {
-		var elements = delimiters();
+	var state = {
+		on: false,
+		target: "hr",
+		anchor: "top",
+		position: -1,
+		overlay: (function() {
+			var child = document.createElement("div");
+			child.style.display = "block";
+			child.style.position = "absolute";
+			child.style.textAlign = "center";
+			child.innerHTML = "Use the arrow keys &larr; and &rarr; to navigate.";
+
+			var parent = document.createElement("div");
+			parent.id = "cover";
+			parent.style.display = "block";
+			parent.style.position = "absolute";
+			parent.style.textAlign = "center";
+			parent.style.zIndex = "65535";
+			parent.style.width = "100%";
+			parent.style.height = "100%";
+			parent.style.left = "0px";
+			parent.style.top = "0px";
+
+			parent.appendChild(child);
+
+			return parent;
+		})()
+	};
+
+	var getTags = function() {
+		return document.getElementsByTagName(state.target);
+	};
+
+	var getPosition = function() {
+		return state.position;
+	};
+
+	var setPosition = function(position) {
+		var tags = getTags();
 		var documentHeight = getDocumentHeight();
 		var viewHeight = getViewportHeight();
 		var viewWidth = getViewportWidth();
+		var top = state.anchor === "top";
+		var parent = state.overlay;
+		var child = parent.firstChild;
 
-		var nextLine;
-		var nextDisplay;
-		var nextOffset;
+		var position;
+		var display;
+		var offset;
 		if (position <= -1) {
-			nextLine = -1;
-			nextDisplay = "block";
-			nextOffset = 0;
-		} else if (position >= elements.length) {
-			nextLine = elements.length;
-			nextDisplay = "none";
-			nextOffset = documentHeight;
+			position = -1;
+			display = "block";
+			offset = 0;
+		} else if (position >= tags.length) {
+			position = tags.length;
+			display = "none";
+			offset = documentHeight;
 		} else {
-			nextLine = position;
-			nextDisplay = "none";
-			nextOffset = 0;
-			for (var index = 0;
-					index < elements.length;
-					++index)
-				if (index === nextLine)
-					nextOffset = getTopOffset(elements[index]);
+			position = position;
+			display = "none";
+			offset = 0;
+			for (var tag = 0;
+					tag < tags.length;
+					++tag)
+				if (tag === position) {
+					offset = (top ? getTopOffset : getBottomOffset)(tags[tag]);
+					break;
+				}
 		}
 
-		currentPosition = nextLine;
-		usage.style.display = nextDisplay;
-		usage.style.top = ((viewHeight - usage.offsetHeight) / 2) + "px";
-		usage.style.left = ((viewWidth - usage.offsetWidth) / 2) + "px";
-		overlay.style.top = nextOffset + "px";
-		overlay.style.height = (documentHeight - nextOffset) + "px";
+		state.position = position;
+		child.style.display = display;
+		child.style.top = ((viewHeight - child.offsetHeight) / 2) + "px";
+		child.style.left = ((viewWidth - child.offsetWidth) / 2) + "px";
+		parent.style.top = offset + "px";
+		parent.style.height = (documentHeight - offset) + "px";
 
-		window.scrollTo(0, Math.max(0, nextOffset - viewHeight));
+		window.scrollTo(0, Math.max(0, offset - viewHeight));
 	};
 
-	var last = function() {
-		update(delimiters().length);
+	var uncoverLast = function() {
+		setPosition(getTags().length);
 	};
 
-	var next = function() {
-		update(currentPosition + 1);
+	var uncoverNext = function() {
+		setPosition(state.position + 1);
 	};
 
-	var current = function() {
-		update(currentPosition);
+	var uncoverCurrent = function() {
+		setPosition(state.position);
 	};
 
-	var previous = function() {
-		update(currentPosition - 1);
+	var uncoverPrevious = function() {
+		setPosition(state.position - 1);
 	};
 
-	var first = function() {
-		update(-1);
+	var uncoverFirst = function() {
+		setPosition(-1);
 	};
 
-	var get = function() {
-		return currentPosition;
+	var getTarget = function() {
+		return state.target;
 	};
 
-	var set = function(n) {
-		update(n);
+	var setTarget = function(target) {
+		state.target = target.toString();
+
+		uncoverCurrent();
 	};
 
-	var dispatch = function(event) {
+	var getAnchor = function() {
+		return state.anchor;
+	};
+
+	var anchorTop = function() {
+		state.anchor = "top";
+
+		uncoverCurrent();
+	};
+
+	var anchorBottom = function() {
+		state.anchor = "bottom";
+
+		uncoverCurrent();
+	};
+
+	var getKeys = function() {
+		return state.target;
+	};
+
+	var setKeys = function(target) {
+		state.target = target.toString();
+
+		uncoverCurrent();
+	};
+
+	var handleEvent = function(event) {
 		var event = event || window.event;
 
 		switch (event.type) {
 		case "keydown":
-			switch (event.keyCode) {
-			case VK_RIGHT:
+			switch (event.key) {
+			case keyCode.right:
 				if (event.ctrlKey)
-					last();
+					uncoverLast();
 				else
-					next();
+					uncoverNext();
 				break;
 
-			case VK_LEFT:
+			case keyCode.left:
 				if (event.ctrlKey)
-					first();
+					uncoverFirst();
 				else
-					previous();
+					uncoverPrevious();
 				break;
 			}
 			break;
 
 		case "load":
-			document.body.appendChild(overlay);
+			document.body.appendChild(state.overlay);
 		case "resize":
-			current();
+			uncoverCurrent();
 			break;
 
 		case "unload":
-			document.body.removeChild(overlay);
+			document.body.removeChild(state.overlay);
 		}
 	};
 
 	var toggle = function() {
-		currentlyOn = !currentlyOn;
+		state.on = !state.on;
 
 		var events = ["keydown", "load", "resize", "unload"];
 
-		if (currentlyOn) {
-			for (var index = 0;
-					index < events.length;
-					++index)
-				window.addEventListener(events[index], dispatch);
+		if (state.on) {
+			for (var event = 0;
+					event < events.length;
+					++event)
+				window.addEventListener(events[event], handleEvent);
 
 			window.dispatchEvent(new Event("load"));
 		} else {
 			window.dispatchEvent(new Event("unload"));
 
-			for (var index = 0;
-					index < events.length;
-					++index)
-				window.removeEventListener(events[index], dispatch);
+			for (var event = 0;
+					event < events.length;
+					++event)
+				window.removeEventListener(events[event], handleEvent);
 		}
 	};
 
-	var target = function(tag) {
-		currentAnchor = tag;
-
-		current();
-	};
-
-	// This determines the visible parts.
-
 	return {
-		last: last,
-		next: next,
-		current: current,
-		previous: previous,
-		first: first,
-		get: get,
-		set: set,
 		toggle: toggle,
-		target: target
+		getTarget: getTarget,
+		setTarget: setTarget,
+		getAnchor: getAnchor,
+		setAnchor: setAnchor,
+		getKeys: getKeys,
+		setKeys: setKeys,
+		getPosition: getPosition,
+		setPosition: setPosition,
+		uncoverLast: uncoverLast,
+		uncoverNext: uncoverNext,
+		uncoverCurrent: uncoverCurrent,
+		uncoverPrevious: uncoverPrevious,
+		uncoverFirst: uncoverFirst
 	};
 })();
