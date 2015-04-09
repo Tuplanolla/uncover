@@ -1,7 +1,7 @@
 # Uncover
 
-Uncover (or UncoverJS, if need be) is a tiny web framework that
-turns any website into an interactive presentation.
+Uncover (or UncoverJS, if need be) is a tiny JavaScript framework for
+turning any website into slides that can be uncovered interactively.
 It can be used as is or put into a bookmarklet.
 
 ----
