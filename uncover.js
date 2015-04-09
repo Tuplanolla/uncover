@@ -39,16 +39,19 @@ var uncover = (function() {
 
 	var state = {
 		on: false,
+		position: -1,
 		target: "hr",
 		anchor: "top",
-		position: -1,
+		collector: function(target) {
+			return document.getElementsByTagName(target);
+		},
 		bindings: [],
 		overlay: (function() {
 			var child = document.createElement("div");
 			child.style.display = "block";
 			child.style.position = "absolute";
 			child.style.textAlign = "center";
-			child.innerHTML = "Use the arrow keys &uarr; and &darr; to navigate.";
+			child.innerHTML = "Use the arrow keys &darr; and &uarr; to navigate.";
 
 			var parent = document.createElement("div");
 			parent.id = "uncover";
@@ -68,7 +71,7 @@ var uncover = (function() {
 	};
 
 	var getTags = function() {
-		return document.getElementsByTagName(state.target);
+		return state.collector(state.target);
 	};
 
 	var getPosition = function() {
@@ -157,6 +160,14 @@ var uncover = (function() {
 		state.anchor = "bottom";
 
 		uncoverCurrent();
+	};
+
+	var getCollector = function() {
+		return state.collector;
+	};
+
+	var setCollector = function(collector) {
+		state.collector = collector;
 	};
 
 	var getBindings = function() {
@@ -261,6 +272,8 @@ var uncover = (function() {
 		anchorBottom: anchorBottom,
 		getPosition: getPosition,
 		setPosition: setPosition,
+		getCollector: getCollector,
+		setCollector: setCollector,
 		getBindings: getBindings,
 		setBindings: setBindings,
 		first: uncoverFirst,
