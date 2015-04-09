@@ -1,8 +1,11 @@
-// This is a tiny web framework called Uncover (or UncoverJS, if need be) that
-// turns any website into an interactive presentation.
-// It falls under the terms of the GNU GPL version 3 or later.
-
 var uncover = (function() {
+	// These are general-purpose constants.
+
+	var VK_LEFT = 37;
+	var VK_UP = 38;
+	var VK_RIGHT = 39;
+	var VK_DOWN = 40;
+
 	// These are general-purpose procedures.
 
 	var getTopOffset = function(element) {
@@ -41,7 +44,9 @@ var uncover = (function() {
 
 	var currentlyOn = false;
 
-	var currentLine = -1;
+	var currentAnchor = "hr";
+
+	var currentPosition = -1;
 
 	var usage = (function () {
 		var element = document.createElement("div");
@@ -52,7 +57,7 @@ var uncover = (function() {
 		return element;
 	})();
 
-	var overlay = (function () {
+	var overlay = (function() {
 		var element = document.createElement("div");
 		element.id = "cover";
 		element.style.display = "block";
@@ -70,10 +75,10 @@ var uncover = (function() {
 	// These are domain-specific procedures.
 
 	var delimiters = function() {
-		return document.getElementsByTagName("hr");
+		return document.getElementsByTagName(currentAnchor);
 	};
 
-	var update = function(line) {
+	var update = function(position) {
 		var elements = delimiters();
 		var documentHeight = getDocumentHeight();
 		var viewHeight = getViewportHeight();
@@ -82,26 +87,26 @@ var uncover = (function() {
 		var nextLine;
 		var nextDisplay;
 		var nextOffset;
-		if (line <= -1) {
+		if (position <= -1) {
 			nextLine = -1;
 			nextDisplay = "block";
 			nextOffset = 0;
-		} else if (line >= elements.length) {
+		} else if (position >= elements.length) {
 			nextLine = elements.length;
 			nextDisplay = "none";
 			nextOffset = documentHeight;
 		} else {
-			nextLine = line;
+			nextLine = position;
 			nextDisplay = "none";
 			nextOffset = 0;
 			for (var index = 0;
 					index < elements.length;
 					++index)
-				if (index == nextLine)
+				if (index === nextLine)
 					nextOffset = getTopOffset(elements[index]);
 		}
 
-		currentLine = nextLine;
+		currentPosition = nextLine;
 		usage.style.display = nextDisplay;
 		usage.style.top = ((viewHeight - usage.offsetHeight) / 2) + "px";
 		usage.style.left = ((viewWidth - usage.offsetWidth) / 2) + "px";
@@ -116,49 +121,58 @@ var uncover = (function() {
 	};
 
 	var next = function() {
-		update(currentLine + 1);
+		update(currentPosition + 1);
 	};
 
 	var current = function() {
-		update(currentLine);
+		update(currentPosition);
 	};
 
 	var previous = function() {
-		update(currentLine - 1);
+		update(currentPosition - 1);
 	};
 
 	var first = function() {
 		update(-1);
 	};
 
+	var get = function() {
+		return currentPosition;
+	};
+
+	var set = function(n) {
+		update(n);
+	};
+
 	var dispatch = function(event) {
 		var event = event || window.event;
 
 		switch (event.type) {
-		case 'keydown':
+		case "keydown":
 			switch (event.keyCode) {
-			case 39: // right
+			case VK_RIGHT:
 				if (event.ctrlKey)
 					last();
 				else
 					next();
 				break;
-			case 37: // left
+
+			case VK_LEFT:
 				if (event.ctrlKey)
 					first();
 				else
 					previous();
 				break;
-			case 40: // down
-			case 38: // up
 			}
 			break;
-		case 'load':
+
+		case "load":
 			document.body.appendChild(overlay);
-		case 'resize':
+		case "resize":
 			current();
 			break;
-		case 'unload':
+
+		case "unload":
 			document.body.removeChild(overlay);
 		}
 	};
@@ -166,7 +180,7 @@ var uncover = (function() {
 	var toggle = function() {
 		currentlyOn = !currentlyOn;
 
-		var events = ['keydown', 'load', 'resize', 'unload'];
+		var events = ["keydown", "load", "resize", "unload"];
 
 		if (currentlyOn) {
 			for (var index = 0;
@@ -174,9 +188,9 @@ var uncover = (function() {
 					++index)
 				window.addEventListener(events[index], dispatch);
 
-			window.dispatchEvent(new Event('load'));
+			window.dispatchEvent(new Event("load"));
 		} else {
-			window.dispatchEvent(new Event('unload'));
+			window.dispatchEvent(new Event("unload"));
 
 			for (var index = 0;
 					index < events.length;
@@ -185,7 +199,13 @@ var uncover = (function() {
 		}
 	};
 
-	// This defines the user interface.
+	var target = function(tag) {
+		currentAnchor = tag;
+
+		current();
+	};
+
+	// This determines the visible parts.
 
 	return {
 		last: last,
@@ -193,6 +213,9 @@ var uncover = (function() {
 		current: current,
 		previous: previous,
 		first: first,
-		toggle: toggle
+		get: get,
+		set: set,
+		toggle: toggle,
+		target: target
 	};
 })();
