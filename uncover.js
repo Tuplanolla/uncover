@@ -37,34 +37,21 @@ var uncover = (function() {
 				window.innerWidth || 0);
 	};
 
-	var keyCode = {
-		enter: 13,
-		escape: 27,
-		space: 32,
-		pageUp: 33,
-		pageDown: 34,
-		end: 35,
-		home: 36,
-		left: 37,
-		up: 38,
-		right: 39,
-		down: 40
-	};
-
 	var state = {
 		on: false,
 		target: "hr",
 		anchor: "top",
 		position: -1,
+		bindings: [],
 		overlay: (function() {
 			var child = document.createElement("div");
 			child.style.display = "block";
 			child.style.position = "absolute";
 			child.style.textAlign = "center";
-			child.innerHTML = "Use the arrow keys &larr; and &rarr; to navigate.";
+			child.innerHTML = "Use the arrow keys &uarr; and &darr; to navigate.";
 
 			var parent = document.createElement("div");
-			parent.id = "cover";
+			parent.id = "uncover";
 			parent.style.display = "block";
 			parent.style.position = "absolute";
 			parent.style.textAlign = "center";
@@ -98,57 +85,52 @@ var uncover = (function() {
 		var child = parent.firstChild;
 
 		var position;
-		var display;
 		var offset;
+		var display;
 		if (position <= -1) {
 			position = -1;
-			display = "block";
 			offset = 0;
+			display = "block";
 		} else if (position >= tags.length) {
 			position = tags.length;
-			display = "none";
 			offset = documentHeight;
+			display = "none";
 		} else {
 			position = position;
+			offset = (top ? getTopOffset : getBottomOffset)(tags[position]);
 			display = "none";
-			offset = 0;
-			for (var tag = 0;
-					tag < tags.length;
-					++tag)
-				if (tag === position) {
-					offset = (top ? getTopOffset : getBottomOffset)(tags[tag]);
-					break;
-				}
 		}
 
 		state.position = position;
+
+		parent.style.top = offset + "px";
+		parent.style.height = (documentHeight - offset) + "px";
+
 		child.style.display = display;
 		child.style.top = ((viewHeight - child.offsetHeight) / 2) + "px";
 		child.style.left = ((viewWidth - child.offsetWidth) / 2) + "px";
-		parent.style.top = offset + "px";
-		parent.style.height = (documentHeight - offset) + "px";
 
 		window.scrollTo(0, Math.max(0, offset - viewHeight));
 	};
 
-	var uncoverLast = function() {
-		setPosition(getTags().length);
-	};
-
-	var uncoverNext = function() {
-		setPosition(state.position + 1);
-	};
-
-	var uncoverCurrent = function() {
-		setPosition(state.position);
+	var uncoverFirst = function() {
+		setPosition(-1);
 	};
 
 	var uncoverPrevious = function() {
 		setPosition(state.position - 1);
 	};
 
-	var uncoverFirst = function() {
-		setPosition(-1);
+	var uncoverCurrent = function() {
+		setPosition(state.position);
+	};
+
+	var uncoverNext = function() {
+		setPosition(state.position + 1);
+	};
+
+	var uncoverLast = function() {
+		setPosition(getTags().length);
 	};
 
 	var getTarget = function() {
@@ -156,7 +138,7 @@ var uncover = (function() {
 	};
 
 	var setTarget = function(target) {
-		state.target = target.toString();
+		state.target = target;
 
 		uncoverCurrent();
 	};
@@ -177,14 +159,12 @@ var uncover = (function() {
 		uncoverCurrent();
 	};
 
-	var getKeys = function() {
-		return state.target;
+	var getBindings = function() {
+		return state.bindings;
 	};
 
-	var setKeys = function(target) {
-		state.target = target.toString();
-
-		uncoverCurrent();
+	var setBindings = function(bindings) {
+		state.bindings = bindings;
 	};
 
 	var handleEvent = function(event) {
@@ -192,20 +172,26 @@ var uncover = (function() {
 
 		switch (event.type) {
 		case "keydown":
-			switch (event.key) {
-			case keyCode.right:
-				if (event.ctrlKey)
-					uncoverLast();
-				else
-					uncoverNext();
-				break;
+			for (var index = 0;
+					index < state.bindings.length;
+					++index) {
+				var binding = state.bindings[index];
 
-			case keyCode.left:
-				if (event.ctrlKey)
-					uncoverFirst();
-				else
-					uncoverPrevious();
-				break;
+				if (binding.key === event.which
+						&& (binding.alt === undefined
+							|| binding.alt === event.altKey)
+						&& (binding.ctrl === undefined
+							|| binding.ctrl === event.ctrlKey)
+						&& (binding.meta === undefined
+							|| binding.meta === event.metaKey)
+						&& (binding.shift === undefined
+							|| binding.shift === event.shiftKey)) {
+					if (binding.absorb)
+						event.preventDefault();
+
+					if (binding.action)
+						binding.action();
+				}
 			}
 			break;
 
@@ -242,20 +228,45 @@ var uncover = (function() {
 		}
 	};
 
+	state.bindings = [
+		{
+			key: 38, // Up
+			ctrl: false,
+			absorb: true,
+			action: uncoverPrevious
+		}, {
+			key: 38,
+			ctrl: true,
+			absorb: true,
+			action: uncoverFirst
+		}, {
+			key: 40, // Down
+			ctrl: false,
+			absorb: true,
+			action: uncoverNext
+		}, {
+			key: 40,
+			ctrl: true,
+			absorb: true,
+			action: uncoverLast
+		}
+	];
+
 	return {
 		toggle: toggle,
 		getTarget: getTarget,
 		setTarget: setTarget,
 		getAnchor: getAnchor,
-		setAnchor: setAnchor,
-		getKeys: getKeys,
-		setKeys: setKeys,
+		anchorTop: anchorTop,
+		anchorBottom: anchorBottom,
 		getPosition: getPosition,
 		setPosition: setPosition,
-		uncoverLast: uncoverLast,
-		uncoverNext: uncoverNext,
-		uncoverCurrent: uncoverCurrent,
-		uncoverPrevious: uncoverPrevious,
-		uncoverFirst: uncoverFirst
+		getBindings: getBindings,
+		setBindings: setBindings,
+		first: uncoverFirst,
+		previous: uncoverPrevious,
+		current: uncoverCurrent,
+		next: uncoverNext,
+		last: uncoverLast
 	};
 })();
