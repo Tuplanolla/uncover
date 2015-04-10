@@ -3,14 +3,8 @@
 	<head>
 		<meta content="application/xhtml+xml; charset=UTF-8" http-equiv="Content-Type" />
 		<title>Example</title>
+		<link href="example.css" rel="stylesheet" type="text/css" />
 		<script src="uncover.js" type="text/javascript"></script>
-		<style type="text/css">
-			body {
-				font-family: sans-serif;
-				margin: 0 auto;
-				width: 40em;
-			}
-		</style>
 	</head>
 	<body>
 		<h1 id="uncover">Uncover</h1>
@@ -23,7 +17,7 @@ It can be embedded as is or run as a bookmarklet.</p>
 
 <hr />
 
-<h2 id="license">License</h2>
+<h2 id="license">1   License</h2>
 
 <p>Uncover is free software and
 as such licensed under the GNU GPL.
@@ -34,7 +28,7 @@ they use the same license.</p>
 
 <hr />
 
-<h2 id="history">History</h2>
+<h2 id="history">2   History</h2>
 
 <p>Uncover was written between 2015-04-01 and 2015-04-10 by
 Sampsa “Tuplanolla” Kiiskinen in an attempt to
@@ -42,7 +36,17 @@ create lecture notes that are pleasant to both read and present.</p>
 
 <hr />
 
-<h2 id="example">Example</h2>
+<h2 id="installation">3   Installation</h2>
+
+<p>Uncover comes in a single file without dependencies and
+does not require an elaborate installation.</p>
+
+<pre><code>[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/uncover.js
+</code></pre>
+
+<hr />
+
+<h2 id="example">4   Example</h2>
 
 <p>Uncover works on this very page.
 The following documentation also contains interactive widgets for
@@ -50,16 +54,20 @@ testing any part of the interface.</p>
 
 <p>Those with unsuitable viewers should look at <code>example.html</code> instead.</p>
 
+<pre><code>[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/example.css
+[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/example.html
+</code></pre>
+
 <hr />
 
-<h2 id="usage">Usage</h2>
+<h2 id="usage">5   Usage</h2>
 
 <p>The following requirements are normative.
 If any of the contracts are violated, the behavior is undefined.</p>
 
 <hr />
 
-<h3 id="basic-usage">Basic Usage</h3>
+<h3 id="basic-usage">5.1   Basic Usage</h3>
 
 <p>Uncover is turned on and off with <a href="javascript:uncover.toggle();"><code>uncover.toggle()</code></a>.
 When turned on, it adds an overlay to the current page and
@@ -78,7 +86,7 @@ The default keys are</p>
 
 <hr />
 
-<h3 id="advanced-usage">Advanced Usage</h3>
+<h3 id="advanced-usage">5.2   Advanced Usage</h3>
 
 <p>The movement of the overlay is determined by
 a target descriptor and a collector procedure.</p>
@@ -191,7 +199,7 @@ the original state of the framework may be restored with
 
 <hr />
 
-<h3 id="other-usage">Other Usage</h3>
+<h3 id="other-usage">5.3   Other Usage</h3>
 
 <p>The overlay is a <code>div</code> with</p>
 

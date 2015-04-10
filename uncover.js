@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2015 Sampsa "Tuplanolla" Kiiskinen
+
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the LICENSE file for details.
+*/
+
 var uncover = (function() {
 	var getTopOffset = function(element) {
 		var offset = 0;
@@ -59,8 +66,6 @@ var uncover = (function() {
 
 			var parent = document.createElement("div");
 			parent.id = "uncover-cover";
-			parent.style.backgroundColor = "gray";
-			parent.style.color = "black";
 			parent.style.display = "block";
 			parent.style.position = "absolute";
 			parent.style.textAlign = "center";

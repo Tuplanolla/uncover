@@ -1,0 +1,10 @@
+body {
+	font-family: sans-serif;
+	margin: 0 auto;
+	width: 40em;
+}
+
+#uncover-cover {
+	background-color: gray;
+	color: black;
+}

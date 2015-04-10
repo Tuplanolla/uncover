@@ -8,7 +8,7 @@ It can be embedded as is or run as a bookmarklet.
 
 ----
 
-## License
+## 1   License
 
 Uncover is free software and
 as such licensed under the GNU GPL.
@@ -19,7 +19,7 @@ they use the same license.
 
 ----
 
-## History
+## 2   History
 
 Uncover was written between 2015-04-01 and 2015-04-10 by
 Sampsa "Tuplanolla" Kiiskinen in an attempt to
@@ -27,7 +27,16 @@ create lecture notes that are pleasant to both read and present.
 
 ----
 
-## Example
+## 3   Installation
+
+Uncover comes in a single file without dependencies and
+does not require an elaborate installation.
+
+	[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/uncover.js
+
+----
+
+## 4   Example
 
 Uncover works on this very page.
 The following documentation also contains interactive widgets for
@@ -35,16 +44,19 @@ testing any part of the interface.
 
 Those with unsuitable viewers should look at `example.html` instead.
 
----
+	[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/example.css
+	[user@computer:~]$ wget https://github.com/Tuplanolla/uncover/raw/master/example.html
 
-## Usage
+----
+
+## 5   Usage
 
 The following requirements are normative.
 If any of the contracts are violated, the behavior is undefined.
 
 ----
 
-### Basic Usage
+### 5.1   Basic Usage
 
 Uncover is turned on and off with [`uncover.toggle()`][1].
 When turned on, it adds an overlay to the current page and
@@ -61,7 +73,7 @@ The default keys are
 
 ----
 
-### Advanced Usage
+### 5.2   Advanced Usage
 
 The movement of the overlay is determined by
 a target descriptor and a collector procedure.
@@ -164,7 +176,7 @@ the original state of the framework may be restored with
 
 ----
 
-### Other Usage
+### 5.3   Other Usage
 
 The overlay is a `div` with
 
