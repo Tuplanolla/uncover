@@ -8,6 +8,9 @@ It can be used as is or put into a bookmarklet.
 
 # Draft!
 
+This very page is interactive when compiled into `example.html` ---
+download the files and see!
+
 ----
 
 ## Basic Usage
