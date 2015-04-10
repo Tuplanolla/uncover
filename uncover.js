@@ -16,6 +16,11 @@ var uncover = (function() {
 			+ (element.offsetHeight || 0);
 	};
 
+	var getCenterOffset = function(element) {
+		return getTopOffset(element)
+			+ (element.offsetHeight || 0) / 2;
+	};
+
 	var getDocumentHeight = function() {
 		var body = document.body;
 		var html = document.documentElement;
@@ -39,14 +44,13 @@ var uncover = (function() {
 
 	var state = {
 		on: false,
-		position: -1,
-		target: "hr",
-		anchor: "top",
+		index: -1,
+		target: {},
 		collector: function(target) {
-			return document.getElementsByTagName(target);
+			return [];
 		},
-		help: "Use the arrow keys &darr; and &uarr; to navigate.",
 		bindings: [],
+		help: "",
 		overlay: (function() {
 			var child = document.createElement("div");
 			child.style.display = "block";
@@ -54,7 +58,9 @@ var uncover = (function() {
 			child.style.textAlign = "center";
 
 			var parent = document.createElement("div");
-			parent.id = "uncover";
+			parent.id = "uncover-cover";
+			parent.style.backgroundColor = "gray";
+			parent.style.color = "black";
 			parent.style.display = "block";
 			parent.style.position = "absolute";
 			parent.style.textAlign = "center";
@@ -70,95 +76,97 @@ var uncover = (function() {
 		})()
 	};
 
-	var getTags = function() {
-		return state.collector(state.target);
+	var toggle = function() {
+		state.on = !state.on;
+
+		var events = ["keydown", "load", "resize", "unload"];
+
+		if (state.on) {
+			for (var event = 0;
+					event < events.length;
+					++event)
+				window.addEventListener(events[event], handleEvent);
+
+			window.dispatchEvent(new Event("load"));
+		} else {
+			window.dispatchEvent(new Event("unload"));
+
+			for (var event = 0;
+					event < events.length;
+					++event)
+				window.removeEventListener(events[event], handleEvent);
+		}
 	};
 
-	var getPosition = function() {
-		return state.position;
+	var getIndex = function() {
+		return state.index;
 	};
 
-	var setPosition = function(position) {
-		var tags = getTags();
+	var setIndex = function(index) {
 		var documentHeight = getDocumentHeight();
 		var viewHeight = getViewportHeight();
 		var viewWidth = getViewportWidth();
-		var top = state.anchor === "top";
+
+		var offsets = state.collector(state.target);
 		var parent = state.overlay;
 		var child = parent.firstChild;
 
-		var position;
-		var offset;
-		var display;
-		if (position <= -1) {
-			position = -1;
-			offset = 0;
-			display = "block";
-		} else if (position >= tags.length) {
-			position = tags.length;
-			offset = documentHeight;
-			display = "none";
+		var nextIndex;
+		var nextOffset;
+		var nextDisplay;
+		if (index <= -1) {
+			nextIndex = -1;
+			nextOffset = 0;
+			nextDisplay = "block";
+		} else if (index >= offsets.length) {
+			nextIndex = offsets.length;
+			nextOffset = documentHeight;
+			nextDisplay = "none";
 		} else {
-			position = position;
-			offset = (top ? getTopOffset : getBottomOffset)(tags[position]);
-			display = "none";
+			nextIndex = index;
+			nextOffset = offsets[index];
+			nextDisplay = "none";
 		}
 
-		state.position = position;
+		state.index = nextIndex;
 
-		parent.style.top = offset + "px";
-		parent.style.height = (documentHeight - offset) + "px";
+		parent.style.top = nextOffset + "px";
+		parent.style.height = (documentHeight - nextOffset) + "px";
 
 		child.innerHTML = state.help;
-		child.style.display = display;
+		child.style.display = nextDisplay;
 		child.style.top = ((viewHeight - child.offsetHeight) / 2) + "px";
 		child.style.left = ((viewWidth - child.offsetWidth) / 2) + "px";
 
-		window.scrollTo(0, Math.max(0, offset - viewHeight));
+		window.scrollTo(0, Math.max(0, nextOffset - viewHeight));
 	};
 
 	var uncoverFirst = function() {
-		setPosition(-1);
+		setIndex(-1);
 	};
 
 	var uncoverPrevious = function() {
-		setPosition(state.position - 1);
+		setIndex(state.index - 1);
 	};
 
 	var uncoverCurrent = function() {
-		setPosition(state.position);
+		setIndex(state.index);
 	};
 
 	var uncoverNext = function() {
-		setPosition(state.position + 1);
+		setIndex(state.index + 1);
 	};
 
 	var uncoverLast = function() {
-		setPosition(getTags().length);
+		setIndex(Infinity);
 	};
 
 	var getTarget = function() {
 		return state.target;
 	};
 
-	var setTarget = function(string) {
-		state.target = string;
-
-		uncoverCurrent();
-	};
-
-	var getAnchor = function() {
-		return state.anchor;
-	};
-
-	var anchorTop = function() {
-		state.anchor = "top";
-
-		uncoverCurrent();
-	};
-
-	var anchorBottom = function() {
-		state.anchor = "bottom";
+	var setTarget = function(target) {
+		state.target = target;
 
 		uncoverCurrent();
 	};
@@ -167,24 +175,28 @@ var uncover = (function() {
 		return state.collector;
 	};
 
-	var setCollector = function(procedure) {
-		state.collector = procedure;
-	};
+	var setCollector = function(collector) {
+		state.collector = collector;
 
-	var getHelp = function() {
-		return state.collector;
-	};
-
-	var setHelp = function(html) {
-		state.html = html;
+		uncoverCurrent();
 	};
 
 	var getBindings = function() {
 		return state.bindings;
 	};
 
-	var setBindings = function(array) {
-		state.bindings = array;
+	var setBindings = function(bindings) {
+		state.bindings = bindings;
+	};
+
+	var getHelp = function() {
+		return state.help;
+	};
+
+	var setHelp = function(help) {
+		state.help = help;
+
+		uncoverCurrent();
 	};
 
 	var handleEvent = function(event) {
@@ -226,67 +238,83 @@ var uncover = (function() {
 		}
 	};
 
-	var toggle = function() {
-		state.on = !state.on;
+	var reset = function() {
+		state.on = false;
 
-		var events = ["keydown", "load", "resize", "unload"];
+		state.index = -1;
 
-		if (state.on) {
-			for (var event = 0;
-					event < events.length;
-					++event)
-				window.addEventListener(events[event], handleEvent);
+		state.target = {
+			tag: "hr",
+			alignment: "top"
+		};
 
-			window.dispatchEvent(new Event("load"));
-		} else {
-			window.dispatchEvent(new Event("unload"));
+		state.collector = function(target) {
+			var getOffset;
+			switch (target.alignment || "top") {
+			case "bottom":
+				getOffset = getBottomOffset;
+				break;
 
-			for (var event = 0;
-					event < events.length;
-					++event)
-				window.removeEventListener(events[event], handleEvent);
-		}
+			case "center":
+				getOffset = getCenterOffset;
+				break;
+
+			case "top":
+				getOffset = getTopOffset;
+			}
+
+			var nodes = document.getElementsByTagName(target.tag || "body");
+
+			var positions = [];
+			for (var node = 0;
+					node < nodes.length;
+					++node)
+				positions.push(getOffset(nodes[node]));
+
+			return positions;
+		};
+
+		state.bindings = [
+			{
+				key: 38, // Up
+				ctrl: false,
+				absorb: true,
+				action: uncoverPrevious
+			}, {
+				key: 38,
+				ctrl: true,
+				absorb: true,
+				action: uncoverFirst
+			}, {
+				key: 40, // Down
+				ctrl: false,
+				absorb: true,
+				action: uncoverNext
+			}, {
+				key: 40,
+				ctrl: true,
+				absorb: true,
+				action: uncoverLast
+			}
+		];
+		state.help = "Use the arrow keys &darr; and &uarr; to navigate.";
 	};
 
-	state.bindings = [
-		{
-			key: 38, // Up
-			ctrl: false,
-			absorb: true,
-			action: uncoverPrevious
-		}, {
-			key: 38,
-			ctrl: true,
-			absorb: true,
-			action: uncoverFirst
-		}, {
-			key: 40, // Down
-			ctrl: false,
-			absorb: true,
-			action: uncoverNext
-		}, {
-			key: 40,
-			ctrl: true,
-			absorb: true,
-			action: uncoverLast
-		}
-	];
+	reset();
 
 	return {
 		toggle: toggle,
+		getIndex: getIndex,
+		setIndex: setIndex,
 		getTarget: getTarget,
 		setTarget: setTarget,
-		getAnchor: getAnchor, // Should merge anchor and collector and
-		anchorTop: anchorTop, // expand target limitations to include anchoring
-		anchorBottom: anchorBottom, // among other things...
-		getPosition: getPosition,
-		setPosition: setPosition,
 		getCollector: getCollector,
 		setCollector: setCollector,
-		getHelp: getHelp,
-		setHelp: setHelp,
 		getBindings: getBindings,
 		setBindings: setBindings,
+		getHelp: getHelp,
+		setHelp: setHelp,
+		reset: reset,
 		first: uncoverFirst,
 		previous: uncoverPrevious,
 		current: uncoverCurrent,

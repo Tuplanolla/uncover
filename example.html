@@ -4,36 +4,70 @@
 		<meta content="application/xhtml+xml; charset=UTF-8" http-equiv="Content-Type" />
 		<title>Example</title>
 		<script src="uncover.js" type="text/javascript"></script>
+		<style type="text/css">
+			body {
+				font-family: sans-serif;
+				margin: 0 auto;
+				width: 40em;
+			}
+		</style>
 	</head>
 	<body>
 		<h1 id="uncover">Uncover</h1>
 
-<p>Uncover (or UncoverJS, if need be) is a tiny JavaScript framework for
-turning any website into slides that can be uncovered interactively.
-It can be used as is or put into a bookmarklet.</p>
+<p>Uncover — or UncoverJS, if necessary —
+is a tiny JavaScript framework for turning any web page into a presentation.
+It does so by hiding everything behind an overlay and
+allowing the user to move it like flipping slides.
+It can be embedded as is or run as a bookmarklet.</p>
 
 <hr />
 
-<h1 id="draft">Draft!</h1>
+<h2 id="license">License</h2>
+
+<p>Uncover is free software and
+as such licensed under the GNU GPL.
+The full license can be found in the <code>LICENSE</code> file that
+resides in the same directory as this file.
+In short, copies and derivative works are permitted as long as
+they use the same license.</p>
 
 <hr />
 
-<h2 id="basic-usage">Basic Usage</h2>
+<h2 id="history">History</h2>
+
+<p>Uncover was written between 2015-04-01 and 2015-04-10 by
+Sampsa “Tuplanolla” Kiiskinen in an attempt to
+create lecture notes that are pleasant to both read and present.</p>
+
+<hr />
+
+<h2 id="example">Example</h2>
+
+<p>Uncover works on this very page.
+The following documentation also contains interactive widgets for
+testing any part of the interface.</p>
+
+<p>Those with unsuitable viewers should look at <code>example.html</code> instead.</p>
+
+<hr />
+
+<h2 id="usage">Usage</h2>
+
+<p>The following requirements are normative.
+If any of the contracts are violated, the behavior is undefined.</p>
+
+<hr />
+
+<h3 id="basic-usage">Basic Usage</h3>
 
 <p>Uncover is turned on and off with <a href="javascript:uncover.toggle();"><code>uncover.toggle()</code></a>.
 When turned on, it adds an overlay to the current page and
 binds some keys to move the overlay.</p>
 
-<hr />
-
-<p>By default the overlay moves between</p>
-
-<ul>
-  <li>the top edges of</li>
-  <li><code>hr</code> tags</li>
-</ul>
-
-<p>and the default keys are</p>
+<p>By default the overlay moves between
+the top edges of horizontal rules denoted by <code>hr</code> tags.
+The default keys are</p>
 
 <ul>
   <li><em>Down</em> to move to the next tag or the end of the page,</li>
@@ -44,87 +78,99 @@ binds some keys to move the overlay.</p>
 
 <hr />
 
-<h2 id="overview">Overview</h2>
+<h3 id="advanced-usage">Advanced Usage</h3>
 
-<p>Uncover is free software and
-as such licensed under the GNU GPL.
-The full license can be found in the <code>LICENSE</code> file that
-resides in the same directory as this file.
-In short, copies and derivative works are permitted as long as
-they use the same license.</p>
+<p>The movement of the overlay is determined by
+a target descriptor and a collector procedure.</p>
 
-<p>The project was started on 2015-04-01 and first released on 2015-04-(not yet).
-It was written by Sampsa “Tuplanolla” Kiiskinen for
-presenting web things during lecture things.</p>
+<p>The target descriptor is simply an <code>Object</code> that
+is passed to the collector when moving the overlay is needed, while
+the collector is a unary <code>function</code> that
+converts the target descriptor into an <code>Array</code> of <code>Number</code>s.
+The <code>Number</code>s themselves represent the stopping points of the overlay.</p>
 
-<hr />
-
-<h2 id="advanced-usage">Advanced Usage</h2>
-
-<p>The movement of the overlay is determined by</p>
+<p>The default collector accepts target descriptors that have</p>
 
 <ul>
-  <li>a target string,</li>
-  <li>an anchor string and</li>
-  <li>a collector procedure.</li>
+  <li>a <code>tag</code> name property and</li>
+  <li>an <code>alignment</code> property,</li>
 </ul>
 
-<hr />
-
-<p>The target is simply a string that tells the collector what to look for.
-The default behavior is
-to collect every tag with the name specified by the target string.
-The target string can be obtained with <a href="javascript:window.alert(uncover.getTarget());"><code>uncover.getTarget()</code></a> and
-modified with <a href="javascript:uncover.setTarget((function(x) {return x || uncover.getTarget()})(window.prompt()));"><code>uncover.setTarget(x)</code></a>,
-where <code>x</code> must be a <code>String</code> or the behavior is undefined.</p>
-
-<hr />
-
-<p>The anchor is also a string, but
-its values are restricted to <code>"top"</code> and <code>"bottom"</code>.
-It determines which part of the target element is
-the exact position to place the overlay.
-It can be obtained with <a href="javascript:window.alert(uncover.getAnchor());"><code>uncover.getAnchor()</code></a> and
-changed with <a href="javascript:uncover.anchorTop();"><code>uncover.anchorTop()</code></a> and <a href="javascript:uncover.anchorBottom();"><code>uncover.anchorBottom()</code></a>.</p>
-
-<hr />
-
-<p>The collector is a unary <code>function</code> that takes the target string and
-returns a list of elements.
-As before, there are <a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getCollector()</code></a> and
-<a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));"><code>uncover.setCollector()</code></a>.</p>
-
-<p>This will be changed to something more convenient soon.</p>
-
-<hr />
-
-<p>The keys are customizable through
-<a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getBindings()</code></a> and
-<a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));"><code>uncover.setBindings(a)</code></a>,
-where <code>a</code> must be an <code>Array</code> of object literals with</p>
+<p>where the <code>tag</code> name must be a valid <code>String</code> and
+the <code>alignment</code> must either be <code>"top"</code>, <code>"bottom"</code> or <code>"center"</code>.
+The <code>tag</code> property contains the name of all the tags to collect and
+<code>alignment</code> the offsets on the corresponding elements that
+match the respective stopping points.
+The default target descriptor has</p>
 
 <ul>
-  <li>an integral <code>Number</code> property <code>key</code>,</li>
-  <li>a nullary <code>function</code> property <code>action</code></li>
+  <li><code>tag</code> set to <code>"hr"</code> and</li>
+  <li><code>alignment</code> set to <code>"top"</code>.</li>
 </ul>
 
-<p>and optionally some <code>Bool</code> properties</p>
+<p>The current target descriptor can be obtained with
+<a href="javascript:window.alert(JSON.stringify(uncover.getTarget(), null, 2));"><code>uncover.getTarget()</code></a> and modified with <a href="javascript:uncover.setTarget((function(x) {return x ? eval(x) : uncover.getTarget();})(window.prompt()));"><code>uncover.setTarget(x)</code></a>,
+where <code>x</code> must obey the contract of the corresponding collector.
+Similarly the current collector can be obtained with
+<a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getCollector()</code></a> and modified with <a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector();})(window.prompt()));"><code>uncover.setCollector(f)</code></a>,
+where <code>f</code> must be a <code>function</code> from <code>Object</code>s to <code>Array</code>s of <code>Number</code>s.</p>
 
-<ul>
-  <li><code>alt</code>,</li>
-  <li><code>ctrl</code>,</li>
-  <li><code>meta</code>,</li>
-  <li><code>shift</code> and</li>
-  <li><code>absorb</code></li>
-</ul>
+<p>It is easy to make the overlay move between paragraphs for instance.</p>
 
-<p>or the behavior is undefined.
-Optional properties that are <code>undefined</code> are assumed not to matter.</p>
+<pre><code>uncover.setTarget(
+		({tag: "p", alignment: "top"})
+		);
+</code></pre>
 
 <hr />
 
-<p>It is straightforward to implement such things as
-advancing with the <em>Space</em> key in addition to the defaults.</p>
+<p>The current stopping point can be conveniently manipulated with
+<a href="javascript:uncover.first();"><code>uncover.first()</code></a>,
+<a href="javascript:uncover.previous();"><code>uncover.previous()</code></a>,
+<a href="javascript:uncover.current();"><code>uncover.current()</code></a>,
+<a href="javascript:uncover.next();"><code>uncover.next()</code></a> and
+<a href="javascript:uncover.last();"><code>uncover.last()</code></a>.
+There also exist
+<a href="javascript:window.alert(uncover.getIndex());"><code>uncover.getIndex()</code></a> and
+<a href="javascript:uncover.setIndex((function(x) {return x ? eval(x) : uncover.getIndex();})(window.prompt()));"><code>uncover.setIndex(n)</code></a> for direct access,
+where <code>n</code> must be an integral <code>Number</code> or the behavior is undefined.
+Notably it is impossible for <code>n</code> to be out of bounds.</p>
+
+<hr />
+
+<p>The key bindings are customizable through
+<a href="javascript:window.alert(JSON.stringify(uncover.getBindings(), null, 2));"><code>uncover.getBindings()</code></a> and
+<a href="javascript:uncover.setBindings((function(x) {return x ? eval(x) : uncover.getBindings();})(window.prompt()));"><code>uncover.setBindings(a)</code></a>,
+where <code>a</code> must be an <code>Array</code> of <code>Object</code>s.
+The <code>Object</code>s are required to have</p>
+
+<ul>
+  <li>a <code>key</code> code property,</li>
+  <li>an <code>action</code> property,</li>
+  <li>an optional <code>alt</code> property,</li>
+  <li>an optional <code>ctrl</code> property,</li>
+  <li>an optional <code>meta</code> property,</li>
+  <li>an optional <code>shift</code> property and</li>
+  <li>an optional <code>absorb</code> property,</li>
+</ul>
+
+<p>where <code>key</code> must be an integral <code>Number</code>,
+<code>action</code> must be a nullary <code>function</code> and
+the rest must be <code>Boolean</code>s.
+The <code>key</code> property is the key code as reported by <code>Event.which</code>,
+<code>action</code> is exactly what it says on the tin,
+<code>absorb</code> determines whether
+the key event should be disposed instead of propagated further and
+the rest determine whether certain modifiers are required or not.
+There is a nuance in the interpretation of the modifier properties:</p>
+
+<ul>
+  <li><code>true</code> means yes,</li>
+  <li><code>false</code> means definitely not and</li>
+  <li>leaving them <code>undefined</code> means the state does not matter.</li>
+</ul>
+
+<p>It is straightforward to, for example, repurpose the <em>Space</em> key.</p>
 
 <pre><code>uncover.setBindings(
 		uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}])
@@ -133,22 +179,46 @@ advancing with the <em>Space</em> key in addition to the defaults.</p>
 
 <hr />
 
-<p>The current target element is accessible through the convenient
-<a href="javascript:window.alert(JSON.stringify(uncover.getBindings(), null, 2));"><code>uncover.first()</code></a>,
-<a href="javascript:uncover.setBindings((function(x) {return x ? eval(x) : uncover.getBindings()})(window.prompt()));"><code>uncover.previous()</code></a>,
-<a href="javascript:uncover.first();"><code>uncover.current()</code></a>,
-<a href="javascript:uncover.previous();"><code>uncover.next()</code></a> and
-<a href="javascript:uncover.current();"><code>uncover.last()</code></a>,
-in addition to the more precise
-<a href="javascript:window.alert(uncover.getPosition());"><code>uncover.getPosition()</code></a> and
-<a href="javascript:uncover.setPosition((function(x) {return x ? parseInt(x) : uncover.getPosition()})(window.prompt()));"><code>uncover.setPosition(n)</code></a>,
-where <code>n</code> must be an integral <code>Number</code> or the behavior is undefined.</p>
+<p>For the sake of completeness there is also a way to edit the help message with
+<a href="javascript:window.alert(uncover.getHelp());"><code>uncover.getHelp()</code></a> and <a href="javascript:uncover.setHelp((function(x) {return x ? eval(x) : uncover.getHelp();})(window.prompt()));"><code>uncover.setHelp(s)</code></a>,
+where <code>s</code> must be a <code>String</code>.</p>
 
 <hr />
 
-<h2 id="technical-details">Technical Details</h2>
+<p>If something goes wrong,
+the original state of the framework may be restored with
+<a href="javascript:uncover.reset();"><code>uncover.reset()</code></a>.</p>
 
-<p>The overlay is a <code>div</code> with an <code>id</code> of <code>uncover</code> and a <code>z-index</code> of <code>65535</code>.</p>
+<hr />
+
+<h3 id="other-usage">Other Usage</h3>
+
+<p>The overlay is a <code>div</code> with</p>
+
+<ul>
+  <li>an <code>id</code> of <code>uncover-cover</code>,</li>
+  <li>a <code>z-index</code> of <code>65535</code>,</li>
+  <li>a <code>background-color</code> of neutral <code>"gray"</code> and</li>
+  <li>a text <code>color</code> of <code>"black"</code>.</li>
+</ul>
+
+<p>It may be given any CSS attributes except for</p>
+
+<ul>
+  <li><code>display</code>,</li>
+  <li><code>position</code>,</li>
+  <li><code>text-align</code>,</li>
+  <li><code>width</code>,</li>
+  <li><code>height</code>,</li>
+  <li><code>left</code> or</li>
+  <li><code>top</code>.</li>
+</ul>
+
+<hr />
+
+<p>The overlay has one child, which is also <code>div</code>.
+The child may be given any CSS attributes, but
+must not be removed from its parent.</p>
 
 
 	</body>

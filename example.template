@@ -4,6 +4,13 @@
 		<meta content="application/xhtml+xml; charset=UTF-8" http-equiv="Content-Type" />
 		<title>Example</title>
 		<script src="uncover.js" type="text/javascript"></script>
+		<style type="text/css">
+			body {
+				font-family: sans-serif;
+				margin: 0 auto;
+				width: 40em;
+			}
+		</style>
 	</head>
 	<body>
 		<%= @body %>
