@@ -1,6 +1,6 @@
 # Uncover
 
-Uncover --- or UncoverJS, if necessary ---
+Uncover, or UncoverJS, if necessary,
 is a tiny JavaScript framework for turning any web page into a presentation.
 It does so by hiding everything behind an overlay and
 allowing the user to move it like flipping slides.
