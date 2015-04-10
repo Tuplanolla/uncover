@@ -41,7 +41,7 @@ resides in the same directory as this file.
 In short, copies and derivative works are permitted as long as
 they use the same license.
 
-The project was started on 2015-(urgh) and first released on 2015-(slurp).
+The project was started on 2015-04-01 and first released on 2015-04-(not yet).
 It was written by Sampsa "Tuplanolla" Kiiskinen for
 presenting web things during lecture things.
 
@@ -108,7 +108,9 @@ Optional properties that are `undefined` are assumed not to matter.
 It is straightforward to implement such things as
 advancing with the *Space* key in addition to the defaults.
 
-	uncover.setBindings(uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}]));
+	uncover.setBindings(
+			uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}])
+			);
 
 ----
 
@@ -128,22 +130,21 @@ where `n` must be an integral `Number` or the behavior is undefined.
 ## Technical Details
 
 The overlay is a `div` with an `id` of `uncover` and a `z-index` of `65535`.
-It has a centered child element that is also a `div`.
 
-[1]: javascript:uncover.toggle();
-[2]: javascript:window.alert(uncover.getTarget());
-[3]: javascript:uncover.setTarget((function(x) {return x || uncover.getTarget()})(window.prompt()));
-[4]: javascript:window.alert(uncover.getAnchor());
-[5]: javascript:uncover.anchorTop();
-[6]: javascript:uncover.anchorBottom();
-[7]: javascript:window.alert(uncover.getPosition());
-[8]: javascript:uncover.setPosition((function(x) {return x ? parseInt(x) : uncover.getPosition()})(window.prompt()));
-[9]: javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));
-[10]: javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));
-[11]: javascript:window.alert(JSON.stringify(uncover.getBindings(), null, 2));
-[12]: javascript:uncover.setBindings((function(x) {return x ? eval(x) : uncover.getBindings()})(window.prompt()));
-[13]: javascript:uncover.first();
-[14]: javascript:uncover.previous();
-[15]: javascript:uncover.current();
-[16]: javascript:uncover.next();
-[17]: javascript:uncover.last();
+[1]: #
+[2]: #
+[3]: #
+[4]: #
+[5]: #
+[6]: #
+[7]: #
+[8]: #
+[9]: #
+[10]: #
+[11]: #
+[12]: #
+[13]: #
+[14]: #
+[15]: #
+[16]: #
+[17]: #

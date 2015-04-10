@@ -1,0 +1,17 @@
+[1]: javascript:uncover.toggle();
+[2]: javascript:window.alert(uncover.getTarget());
+[3]: javascript:uncover.setTarget((function(x) {return x || uncover.getTarget()})(window.prompt()));
+[4]: javascript:window.alert(uncover.getAnchor());
+[5]: javascript:uncover.anchorTop();
+[6]: javascript:uncover.anchorBottom();
+[7]: javascript:window.alert(uncover.getPosition());
+[8]: javascript:uncover.setPosition((function(x) {return x ? parseInt(x) : uncover.getPosition()})(window.prompt()));
+[9]: javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));
+[10]: javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector()})(window.prompt()));
+[11]: javascript:window.alert(JSON.stringify(uncover.getBindings(), null, 2));
+[12]: javascript:uncover.setBindings((function(x) {return x ? eval(x) : uncover.getBindings()})(window.prompt()));
+[13]: javascript:uncover.first();
+[14]: javascript:uncover.previous();
+[15]: javascript:uncover.current();
+[16]: javascript:uncover.next();
+[17]: javascript:uncover.last();

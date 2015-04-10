@@ -53,7 +53,7 @@ resides in the same directory as this file.
 In short, copies and derivative works are permitted as long as
 they use the same license.</p>
 
-<p>The project was started on 2015-(urgh) and first released on 2015-(slurp).
+<p>The project was started on 2015-04-01 and first released on 2015-04-(not yet).
 It was written by Sampsa “Tuplanolla” Kiiskinen for
 presenting web things during lecture things.</p>
 
@@ -126,7 +126,9 @@ Optional properties that are <code>undefined</code> are assumed not to matter.</
 <p>It is straightforward to implement such things as
 advancing with the <em>Space</em> key in addition to the defaults.</p>
 
-<pre><code>uncover.setBindings(uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}]));
+<pre><code>uncover.setBindings(
+		uncover.getBindings().concat([{key: 32, absorb: true, action: uncover.next}])
+		);
 </code></pre>
 
 <hr />
@@ -146,8 +148,7 @@ where <code>n</code> must be an integral <code>Number</code> or the behavior is 
 
 <h2 id="technical-details">Technical Details</h2>
 
-<p>The overlay is a <code>div</code> with an <code>id</code> of <code>uncover</code> and a <code>z-index</code> of <code>65535</code>.
-It has a centered child element that is also a <code>div</code>.</p>
+<p>The overlay is a <code>div</code> with an <code>id</code> of <code>uncover</code> and a <code>z-index</code> of <code>65535</code>.</p>
 
 
 	</body>

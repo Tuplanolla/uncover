@@ -45,13 +45,13 @@ var uncover = (function() {
 		collector: function(target) {
 			return document.getElementsByTagName(target);
 		},
+		help: "Use the arrow keys &darr; and &uarr; to navigate.",
 		bindings: [],
 		overlay: (function() {
 			var child = document.createElement("div");
 			child.style.display = "block";
 			child.style.position = "absolute";
 			child.style.textAlign = "center";
-			child.innerHTML = "Use the arrow keys &darr; and &uarr; to navigate.";
 
 			var parent = document.createElement("div");
 			parent.id = "uncover";
@@ -109,6 +109,7 @@ var uncover = (function() {
 		parent.style.top = offset + "px";
 		parent.style.height = (documentHeight - offset) + "px";
 
+		child.innerHTML = state.help;
 		child.style.display = display;
 		child.style.top = ((viewHeight - child.offsetHeight) / 2) + "px";
 		child.style.left = ((viewWidth - child.offsetWidth) / 2) + "px";
@@ -140,8 +141,8 @@ var uncover = (function() {
 		return state.target;
 	};
 
-	var setTarget = function(target) {
-		state.target = target;
+	var setTarget = function(string) {
+		state.target = string;
 
 		uncoverCurrent();
 	};
@@ -166,16 +167,24 @@ var uncover = (function() {
 		return state.collector;
 	};
 
-	var setCollector = function(collector) {
-		state.collector = collector;
+	var setCollector = function(procedure) {
+		state.collector = procedure;
+	};
+
+	var getHelp = function() {
+		return state.collector;
+	};
+
+	var setHelp = function(html) {
+		state.html = html;
 	};
 
 	var getBindings = function() {
 		return state.bindings;
 	};
 
-	var setBindings = function(bindings) {
-		state.bindings = bindings;
+	var setBindings = function(array) {
+		state.bindings = array;
 	};
 
 	var handleEvent = function(event) {
@@ -267,13 +276,15 @@ var uncover = (function() {
 		toggle: toggle,
 		getTarget: getTarget,
 		setTarget: setTarget,
-		getAnchor: getAnchor,
-		anchorTop: anchorTop,
-		anchorBottom: anchorBottom,
+		getAnchor: getAnchor, // Should merge anchor and collector and
+		anchorTop: anchorTop, // expand target limitations to include anchoring
+		anchorBottom: anchorBottom, // among other things...
 		getPosition: getPosition,
 		setPosition: setPosition,
 		getCollector: getCollector,
 		setCollector: setCollector,
+		getHelp: getHelp,
+		setHelp: setHelp,
 		getBindings: getBindings,
 		setBindings: setBindings,
 		first: uncoverFirst,
