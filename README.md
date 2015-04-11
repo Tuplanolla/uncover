@@ -185,21 +185,20 @@ the original state of the whole system may be restored with
 
 ### 5.3   Other Usage
 
-The overlay is a `div` with
+The overlay is a `div` with an `id` of `uncover-cover` and
 
-* an `id` of `uncover-cover`,
 * a `z-index` of `65535`,
 * a `background-color` of neutral `"gray"` and
 * a text `color` of `"black"`.
 
-It may be given any CSS attributes except for
+Its CSS attributes may be overridden with `!important`, with the exception of
 
 * `display`,
 * `position`,
 * `text-align`,
 * `width`,
 * `height`,
-* `left` or
+* `left` and
 * `top`.
 
 ----

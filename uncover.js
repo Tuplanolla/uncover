@@ -5,6 +5,8 @@ This is free software, and you are welcome to redistribute it
 under certain conditions; see the LICENSE file for details.
 */
 
+"use strict";
+
 var uncover = (function() {
 	var getTopOffset = function(element) {
 		var offset = 0;
@@ -131,7 +133,7 @@ var uncover = (function() {
 	};
 
 	var handleEvent = function(event) {
-		var event = event || window.event;
+		event = event || window.event;
 
 		switch (event.type) {
 		case "keydown":
@@ -311,6 +313,8 @@ var uncover = (function() {
 
 			var parent = document.createElement("div");
 			parent.id = "uncover-cover";
+			parent.style.backgroundColor = "gray";
+			parent.style.color = "black";
 			parent.style.display = "block";
 			parent.style.position = "absolute";
 			parent.style.textAlign = "center";

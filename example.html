@@ -208,16 +208,15 @@ the original state of the whole system may be restored with
 
 <h3 id="other-usage">5.3   Other Usage</h3>
 
-<p>The overlay is a <code>div</code> with</p>
+<p>The overlay is a <code>div</code> with an <code>id</code> of <code>uncover-cover</code> and</p>
 
 <ul>
-  <li>an <code>id</code> of <code>uncover-cover</code>,</li>
   <li>a <code>z-index</code> of <code>65535</code>,</li>
   <li>a <code>background-color</code> of neutral <code>"gray"</code> and</li>
   <li>a text <code>color</code> of <code>"black"</code>.</li>
 </ul>
 
-<p>It may be given any CSS attributes except for</p>
+<p>Its CSS attributes may be overridden with <code>!important</code>, with the exception of</p>
 
 <ul>
   <li><code>display</code>,</li>
@@ -225,7 +224,7 @@ the original state of the whole system may be restored with
   <li><code>text-align</code>,</li>
   <li><code>width</code>,</li>
   <li><code>height</code>,</li>
-  <li><code>left</code> or</li>
+  <li><code>left</code> and</li>
   <li><code>top</code>.</li>
 </ul>
 
