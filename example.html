@@ -133,7 +133,7 @@ where <code>f</code> must be a <code>function</code> from <code>Object</code>s t
 <p>It is easy to make the overlay move between paragraphs for instance.</p>
 
 <pre><code>uncover.setTarget(
-		({tag: "p", alignment: "top"})
+		{tag: "p", alignment: "top"}
 		);
 </code></pre>
 
@@ -216,7 +216,8 @@ the original state of the whole system may be restored with
   <li>a text <code>color</code> of <code>"black"</code>.</li>
 </ul>
 
-<p>Its CSS attributes may be overridden with <code>!important</code>, with the exception of</p>
+<p>It may be given new CSS attributes and
+existing ones may be overridden with <code>!important</code>, except for</p>
 
 <ul>
   <li><code>display</code>,</li>

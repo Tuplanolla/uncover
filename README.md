@@ -116,7 +116,7 @@ where `f` must be a `function` from `Object`s to `Array`s of `Number`s.
 It is easy to make the overlay move between paragraphs for instance.
 
 	uncover.setTarget(
-			({tag: "p", alignment: "top"})
+			{tag: "p", alignment: "top"}
 			);
 
 ----
@@ -191,7 +191,8 @@ The overlay is a `div` with an `id` of `uncover-cover` and
 * a `background-color` of neutral `"gray"` and
 * a text `color` of `"black"`.
 
-Its CSS attributes may be overridden with `!important`, with the exception of
+It may be given new CSS attributes and
+existing ones may be overridden with `!important`, except for
 
 * `display`,
 * `position`,

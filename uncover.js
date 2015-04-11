@@ -7,8 +7,8 @@ under certain conditions; see the LICENSE file for details.
 
 "use strict";
 
-var uncover = (function() {
-	var getTopOffset = function(element) {
+var uncover = (function () {
+	var getTopOffset = function (element) {
 		var offset = 0;
 
 		while (element) {
@@ -20,17 +20,17 @@ var uncover = (function() {
 		return offset;
 	};
 
-	var getBottomOffset = function(element) {
+	var getBottomOffset = function (element) {
 		return getTopOffset(element)
 			+ (element.offsetHeight || 0);
 	};
 
-	var getCenterOffset = function(element) {
+	var getCenterOffset = function (element) {
 		return getTopOffset(element)
 			+ (element.offsetHeight || 0) / 2;
 	};
 
-	var getDocumentHeight = function() {
+	var getDocumentHeight = function () {
 		var body = document.body;
 		var html = document.documentElement;
 
@@ -41,14 +41,14 @@ var uncover = (function() {
 					html.offsetHeight || 0) : 0);
 	};
 
-	var getViewportHeight = function() {
+	var getViewportHeight = function () {
 		var html = document.documentElement;
 
 		return Math.max(html ? html.clientHeight || 0 : 0,
 				window.innerHeight || 0);
 	};
 
-	var getViewportWidth = function() {
+	var getViewportWidth = function () {
 		var html = document.documentElement;
 
 		return Math.max(html ? html.clientWidth || 0 : 0,
@@ -59,17 +59,17 @@ var uncover = (function() {
 		on: false,
 		index: -1,
 		target: {},
-		collector: function() {
+		collector: function () {
 			return [];
 		},
 		bindings: []
 	};
 
-	var getIndex = function() {
+	var getIndex = function () {
 		return state.index;
 	};
 
-	var setIndex = function(index) {
+	var setIndex = function (index) {
 		var documentHeight = getDocumentHeight();
 
 		var offsets = state.collector(state.target);
@@ -112,27 +112,27 @@ var uncover = (function() {
 		}
 	};
 
-	var uncoverFirst = function() {
+	var uncoverFirst = function () {
 		setIndex(-1);
 	};
 
-	var uncoverPrevious = function() {
+	var uncoverPrevious = function () {
 		setIndex(state.index - 1);
 	};
 
-	var uncoverCurrent = function() {
+	var uncoverCurrent = function () {
 		setIndex(state.index);
 	};
 
-	var uncoverNext = function() {
+	var uncoverNext = function () {
 		setIndex(state.index + 1);
 	};
 
-	var uncoverLast = function() {
+	var uncoverLast = function () {
 		setIndex(Infinity);
 	};
 
-	var handleEvent = function(event) {
+	var handleEvent = function (event) {
 		event = event || window.event;
 
 		switch (event.type) {
@@ -171,11 +171,11 @@ var uncover = (function() {
 		}
 	};
 
-	var getOn = function() {
+	var getOn = function () {
 		return state.on;
 	};
 
-	var setOn = function(on) {
+	var setOn = function (on) {
 		var events = ["keydown", "load", "resize", "unload"];
 
 		if (!state.on && on) {
@@ -199,51 +199,51 @@ var uncover = (function() {
 		uncoverCurrent();
 	};
 
-	var toggle = function() {
+	var toggle = function () {
 		setOn(!state.on);
 	};
 
-	var getTarget = function() {
+	var getTarget = function () {
 		return state.target;
 	};
 
-	var setTarget = function(target) {
+	var setTarget = function (target) {
 		state.target = target;
 
 		uncoverCurrent();
 	};
 
-	var getCollector = function() {
+	var getCollector = function () {
 		return state.collector;
 	};
 
-	var setCollector = function(collector) {
+	var setCollector = function (collector) {
 		state.collector = collector;
 
 		uncoverCurrent();
 	};
 
-	var getBindings = function() {
+	var getBindings = function () {
 		return state.bindings;
 	};
 
-	var setBindings = function(bindings) {
+	var setBindings = function (bindings) {
 		state.bindings = bindings;
 
 		uncoverCurrent();
 	};
 
-	var getHelp = function() {
+	var getHelp = function () {
 		return state.help;
 	};
 
-	var setHelp = function(help) {
+	var setHelp = function (help) {
 		state.help = help;
 
 		uncoverCurrent();
 	};
 
-	var reset = function() {
+	var reset = function () {
 		setOn(false);
 
 		state.index = -1;
@@ -253,7 +253,7 @@ var uncover = (function() {
 			alignment: "top"
 		};
 
-		state.collector = function(target) {
+		state.collector = function (target) {
 			var getOffset;
 			switch (target.alignment || "top") {
 			case "bottom":
@@ -305,7 +305,7 @@ var uncover = (function() {
 
 		state.help = "Use the arrow keys &darr; and &uarr; to navigate.";
 
-		state.overlay = (function() {
+		state.overlay = (function () {
 			var child = document.createElement("div");
 			child.style.display = "block";
 			child.style.position = "absolute";
