@@ -58,7 +58,7 @@ If any of the contracts are violated, the behavior is undefined.
 
 ### 5.1   Basic Usage
 
-Uncover is turned on and off with [`uncover.toggle()`][1].
+Uncover is turned on and off with [`uncover.toggle()`][10].
 When turned on, it adds an overlay to the current page and
 binds some keys to move the overlay.
 
@@ -74,6 +74,13 @@ The default keys are
 ----
 
 ### 5.2   Advanced Usage
+
+Checking whether Uncover is on is possible with [`uncover.getOn()`][8] and
+changing its state with [`uncover.setOn(b)`][9],
+where `b` must be a `Boolean`.
+It may be configured and its overlay may be moved regardless of its state.
+
+----
 
 The movement of the overlay is determined by
 a target descriptor and a collector procedure.
@@ -100,10 +107,10 @@ The default target descriptor has
 * `alignment` set to `"top"`.
 
 The current target descriptor can be obtained with
-[`uncover.getTarget()`][4] and modified with [`uncover.setTarget(x)`][5],
+[`uncover.getTarget()`][11] and modified with [`uncover.setTarget(x)`][12],
 where `x` must obey the contract of the corresponding collector.
 Similarly the current collector can be obtained with
-[`uncover.getCollector()`][6] and modified with [`uncover.setCollector(f)`][7],
+[`uncover.getCollector()`][13] and modified with [`uncover.setCollector(f)`][14],
 where `f` must be a `function` from `Object`s to `Array`s of `Number`s.
 
 It is easy to make the overlay move between paragraphs for instance.
@@ -115,22 +122,22 @@ It is easy to make the overlay move between paragraphs for instance.
 ----
 
 The current stopping point can be conveniently manipulated with
-[`uncover.first()`][13],
-[`uncover.previous()`][14],
-[`uncover.current()`][15],
-[`uncover.next()`][16] and
-[`uncover.last()`][17].
+[`uncover.first()`][3],
+[`uncover.previous()`][4],
+[`uncover.current()`][5],
+[`uncover.next()`][6] and
+[`uncover.last()`][7].
 There also exist
-[`uncover.getIndex()`][2] and
-[`uncover.setIndex(n)`][3] for direct access,
-where `n` must be an integral `Number` or the behavior is undefined.
-Notably it is impossible for `n` to be out of bounds.
+[`uncover.getIndex()`][1] and
+[`uncover.setIndex(n)`][2] for direct access,
+where `n` must be an integral `Number`.
+Any `Number` is fine, because `n` is never out of bounds.
 
 ----
 
 The key bindings are customizable through
-[`uncover.getBindings()`][8] and
-[`uncover.setBindings(a)`][9],
+[`uncover.getBindings()`][15] and
+[`uncover.setBindings(a)`][16],
 where `a` must be an `Array` of `Object`s.
 The `Object`s are required to have
 
@@ -165,14 +172,14 @@ It is straightforward to, for example, repurpose the *Space* key.
 ----
 
 For the sake of completeness there is also a way to edit the help message with
-[`uncover.getHelp()`][10] and [`uncover.setHelp(s)`][11],
+[`uncover.getHelp()`][17] and [`uncover.setHelp(s)`][18],
 where `s` must be a `String`.
 
 ----
 
 If something goes wrong,
-the original state of the framework may be restored with
-[`uncover.reset()`][12].
+the original state of the whole system may be restored with
+[`uncover.reset()`][19].
 
 ----
 
@@ -218,3 +225,5 @@ must not be removed from its parent.
 [15]: #
 [16]: #
 [17]: #
+[18]: #
+[19]: #

@@ -88,6 +88,13 @@ The default keys are</p>
 
 <h3 id="advanced-usage">5.2   Advanced Usage</h3>
 
+<p>Checking whether Uncover is on is possible with <a href="javascript:window.alert(uncover.getOn());"><code>uncover.getOn()</code></a> and
+changing its state with <a href="javascript:uncover.setOn((function(x) {return x ? eval(x) : uncover.getOn();})(window.prompt()));"><code>uncover.setOn(b)</code></a>,
+where <code>b</code> must be a <code>Boolean</code>.
+It may be configured and its overlay may be moved regardless of its state.</p>
+
+<hr />
+
 <p>The movement of the overlay is determined by
 a target descriptor and a collector procedure.</p>
 
@@ -120,7 +127,7 @@ The default target descriptor has</p>
 <a href="javascript:window.alert(JSON.stringify(uncover.getTarget(), null, 2));"><code>uncover.getTarget()</code></a> and modified with <a href="javascript:uncover.setTarget((function(x) {return x ? eval(x) : uncover.getTarget();})(window.prompt()));"><code>uncover.setTarget(x)</code></a>,
 where <code>x</code> must obey the contract of the corresponding collector.
 Similarly the current collector can be obtained with
-<a href="javascript:window.alert(JSON.stringify(uncover.getCollector(), null, 2));"><code>uncover.getCollector()</code></a> and modified with <a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector();})(window.prompt()));"><code>uncover.setCollector(f)</code></a>,
+<a href="javascript:window.alert(uncover.getCollector());"><code>uncover.getCollector()</code></a> and modified with <a href="javascript:uncover.setCollector((function(x) {return x ? eval(x) : uncover.getCollector();})(window.prompt()));"><code>uncover.setCollector(f)</code></a>,
 where <code>f</code> must be a <code>function</code> from <code>Object</code>s to <code>Array</code>s of <code>Number</code>s.</p>
 
 <p>It is easy to make the overlay move between paragraphs for instance.</p>
@@ -141,8 +148,8 @@ where <code>f</code> must be a <code>function</code> from <code>Object</code>s t
 There also exist
 <a href="javascript:window.alert(uncover.getIndex());"><code>uncover.getIndex()</code></a> and
 <a href="javascript:uncover.setIndex((function(x) {return x ? eval(x) : uncover.getIndex();})(window.prompt()));"><code>uncover.setIndex(n)</code></a> for direct access,
-where <code>n</code> must be an integral <code>Number</code> or the behavior is undefined.
-Notably it is impossible for <code>n</code> to be out of bounds.</p>
+where <code>n</code> must be an integral <code>Number</code>.
+Any <code>Number</code> is fine, because <code>n</code> is never out of bounds.</p>
 
 <hr />
 
@@ -194,7 +201,7 @@ where <code>s</code> must be a <code>String</code>.</p>
 <hr />
 
 <p>If something goes wrong,
-the original state of the framework may be restored with
+the original state of the whole system may be restored with
 <a href="javascript:uncover.reset();"><code>uncover.reset()</code></a>.</p>
 
 <hr />
