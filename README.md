@@ -210,7 +210,7 @@ must not be removed from its parent.
 
 ----
 
-### 6   Compatibility
+## 6   Compatibility
 
 Uncover seems to work with
 
@@ -218,7 +218,17 @@ Uncover seems to work with
 * Google Chrome 1,
 * Microsoft Internet Explorer 9,
 * Mozilla Firefox 3 and
-* Opera Software Opera 11.
+* Opera Software Opera 11
+
+in addition to the newest versions of
+
+* Epiphany,
+* Iceape,
+* Konqueror,
+* Luakit,
+* Midori,
+* Rekonq and
+* SeaMonkey.
 
 [1]: #
 [2]: #
