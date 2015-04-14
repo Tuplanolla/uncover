@@ -214,12 +214,11 @@ must not be removed from its parent.
 
 Uncover seems to work with
 
-* Apple Safari 5,
-* Google Chrome 14,
+* Apple Safari 4,
+* Google Chrome 1,
 * Microsoft Internet Explorer 9,
-* Mozilla Firefox 20,
-* Opera 12 and
-* Samsung Galaxy Note 2.
+* Mozilla Firefox 3 and
+* Opera Software Opera 11.
 
 [1]: #
 [2]: #

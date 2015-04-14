@@ -59,11 +59,32 @@ var uncover = (function () {
 		try {
 			return new Event(name);
 		} catch (exception) {
-			var event = document.createEvent("CustomEvent");
-			event.initCustomEvent(name, false, false, null);
+			var object;
 
-			return event;
+			if (document.createEvent) {
+				object = document.createEvent("HTMLEvents");
+				object.initEvent(name, false, false);
+				object.eventName = name;
+			} else {
+				object = document.createEventObject();
+				object.eventName = object.eventType = name;
+			}
+
+			return object;
 		}
+	};
+
+	var getEventDispatcher = function (fallback) {
+		if (window.dispatchEvent)
+			return function (object) {
+				window.dispatchEvent(object);
+			};
+		else if (window.fireEvent)
+			return function (object) {
+				window.fireEvent("on" + object.eventType, object);
+			};
+		else
+			return fallback;
 	};
 
 	var state = {
@@ -108,16 +129,16 @@ var uncover = (function () {
 			var viewHeight = getViewportHeight();
 			var viewWidth = getViewportWidth();
 
-			var parent = state.overlay;
-			var child = parent.firstChild;
+			var superior = state.overlay;
+			var inferior = superior.firstChild;
 
-			parent.style.top = nextOffset + "px";
-			parent.style.height = (documentHeight - nextOffset) + "px";
+			superior.style.top = nextOffset + "px";
+			superior.style.height = (documentHeight - nextOffset) + "px";
 
-			child.innerHTML = state.help;
-			child.style.display = nextDisplay;
-			child.style.top = ((viewHeight - child.offsetHeight) / 2) + "px";
-			child.style.left = ((viewWidth - child.offsetWidth) / 2) + "px";
+			inferior.innerHTML = state.help;
+			inferior.style.display = nextDisplay;
+			inferior.style.top = ((viewHeight - inferior.offsetHeight) / 2) + "px";
+			inferior.style.left = ((viewWidth - inferior.offsetWidth) / 2) + "px";
 
 			window.scrollTo(0, Math.max(0, nextOffset - viewHeight));
 		}
@@ -143,15 +164,15 @@ var uncover = (function () {
 		setIndex(Infinity);
 	};
 
-	var handleEvent = function (event) {
-		event = event || window.event;
+	var handleEvent = function (object) {
+		var happening = object || window.event;
 
-		switch (event.type) {
-		case "customUnload":
+		switch (happening.type) {
+		case "customunload":
 			document.body.removeChild(state.overlay);
 			break;
 
-		case "customLoad":
+		case "customload":
 			document.body.appendChild(state.overlay);
 		case "resize":
 			uncoverCurrent();
@@ -163,17 +184,17 @@ var uncover = (function () {
 					++index) {
 				var binding = state.bindings[index];
 
-				if (binding.key === event.which
+				if (binding.key === happening.which
 						&& (binding.alt === undefined
-							|| binding.alt === event.altKey)
+							|| binding.alt === happening.altKey)
 						&& (binding.ctrl === undefined
-							|| binding.ctrl === event.ctrlKey)
+							|| binding.ctrl === happening.ctrlKey)
 						&& (binding.meta === undefined
-							|| binding.meta === event.metaKey)
+							|| binding.meta === happening.metaKey)
 						&& (binding.shift === undefined
-							|| binding.shift === event.shiftKey)) {
+							|| binding.shift === happening.shiftKey)) {
 					if (binding.absorb)
-						event.preventDefault();
+						happening.preventDefault();
 
 					if (binding.action)
 						binding.action();
@@ -187,26 +208,26 @@ var uncover = (function () {
 	};
 
 	var setOn = function (on) {
-		var events = ["customLoad", "customUnload", "keydown", "resize"];
+		var dispatcher = getEventDispatcher(handleEvent);
+		var events = ["customload", "customunload", "keydown", "resize"];
 
 		var previouslyOn = state.on;
-
 		state.on = on;
 
 		if (!previouslyOn && on) {
-			for (var event = 0;
-					event < events.length;
-					++event)
-				window.addEventListener(events[event], handleEvent);
+			for (var index = 0;
+					index < events.length;
+					++index)
+				window.addEventListener(events[index], handleEvent, false);
 
-			window.dispatchEvent(getNewEvent("customLoad"));
+			dispatcher(getNewEvent("customload"));
 		} else if (previouslyOn && !on) {
-			window.dispatchEvent(getNewEvent("customUnload"));
+			dispatcher(getNewEvent("customunload"));
 
-			for (var event = 0;
-					event < events.length;
-					++event)
-				window.removeEventListener(events[event], handleEvent);
+			for (var index = 0;
+					index < events.length;
+					++index)
+				window.removeEventListener(events[index], handleEvent, false);
 		}
 
 		uncoverCurrent();
@@ -319,27 +340,27 @@ var uncover = (function () {
 		state.help = "Use the arrow keys &darr; and &uarr; to navigate.";
 
 		state.overlay = (function () {
-			var child = document.createElement("div");
-			child.style.display = "block";
-			child.style.position = "absolute";
-			child.style.textAlign = "center";
+			var inferior = document.createElement("div");
+			inferior.style.display = "block";
+			inferior.style.position = "absolute";
+			inferior.style.textAlign = "center";
 
-			var parent = document.createElement("div");
-			parent.id = "uncover-cover";
-			parent.style.backgroundColor = "gray";
-			parent.style.color = "black";
-			parent.style.display = "block";
-			parent.style.position = "absolute";
-			parent.style.textAlign = "center";
-			parent.style.zIndex = "65535";
-			parent.style.width = "100%";
-			parent.style.height = "100%";
-			parent.style.left = "0px";
-			parent.style.top = "0px";
+			var superior = document.createElement("div");
+			superior.id = "uncover-cover";
+			superior.style.backgroundColor = "gray";
+			superior.style.color = "black";
+			superior.style.display = "block";
+			superior.style.position = "absolute";
+			superior.style.textAlign = "center";
+			superior.style.zIndex = "65535";
+			superior.style.width = "100%";
+			superior.style.height = "100%";
+			superior.style.left = "0px";
+			superior.style.top = "0px";
 
-			parent.appendChild(child);
+			superior.appendChild(inferior);
 
-			return parent;
+			return superior;
 		})();
 	};
 
