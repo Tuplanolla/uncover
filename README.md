@@ -208,6 +208,19 @@ The overlay has one child, which is also `div`.
 The child may be given any CSS attributes, but
 must not be removed from its parent.
 
+----
+
+### 6   Compatibility
+
+Uncover seems to work with
+
+* Apple Safari 5,
+* Google Chrome 14,
+* Microsoft Internet Explorer 9,
+* Mozilla Firefox 20,
+* Opera 12 and
+* Samsung Galaxy Note 2.
+
 [1]: #
 [2]: #
 [3]: #

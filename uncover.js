@@ -55,6 +55,17 @@ var uncover = (function () {
 				window.innerWidth || 0);
 	};
 
+	var getNewEvent = function (name) {
+		try {
+			return new Event(name);
+		} catch (exception) {
+			var event = document.createEvent("CustomEvent");
+			event.initCustomEvent(name, false, false, null);
+
+			return event;
+		}
+	};
+
 	var state = {
 		on: false,
 		index: -1,
@@ -136,6 +147,16 @@ var uncover = (function () {
 		event = event || window.event;
 
 		switch (event.type) {
+		case "customUnload":
+			document.body.removeChild(state.overlay);
+			break;
+
+		case "customLoad":
+			document.body.appendChild(state.overlay);
+		case "resize":
+			uncoverCurrent();
+			break;
+
 		case "keydown":
 			for (var index = 0;
 					index < state.bindings.length;
@@ -158,16 +179,6 @@ var uncover = (function () {
 						binding.action();
 				}
 			}
-			break;
-
-		case "load":
-			document.body.appendChild(state.overlay);
-		case "resize":
-			uncoverCurrent();
-			break;
-
-		case "unload":
-			document.body.removeChild(state.overlay);
 		}
 	};
 
@@ -176,25 +187,27 @@ var uncover = (function () {
 	};
 
 	var setOn = function (on) {
-		var events = ["keydown", "load", "resize", "unload"];
+		var events = ["customLoad", "customUnload", "keydown", "resize"];
 
-		if (!state.on && on) {
+		var previouslyOn = state.on;
+
+		state.on = on;
+
+		if (!previouslyOn && on) {
 			for (var event = 0;
 					event < events.length;
 					++event)
 				window.addEventListener(events[event], handleEvent);
 
-			window.dispatchEvent(new Event("load"));
-		} else if (state.on && !on) {
-			window.dispatchEvent(new Event("unload"));
+			window.dispatchEvent(getNewEvent("customLoad"));
+		} else if (previouslyOn && !on) {
+			window.dispatchEvent(getNewEvent("customUnload"));
 
 			for (var event = 0;
 					event < events.length;
 					++event)
 				window.removeEventListener(events[event], handleEvent);
 		}
-
-		state.on = on;
 
 		uncoverCurrent();
 	};
